@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Save the Date</title>
+
+<!--
+  ============================================================
+  THIS IS THE "HTML" LAYER — the structure.
+  Everything inside <body> below is a room in the house:
+  a hero section, a video, a form. No styling lives here.
+  ============================================================
+-->
+
+<style>
+  /* ============================================================
+     THIS IS THE "CSS" LAYER — the paint, furniture, layout.
+     Everything below decides colors, spacing, fonts — but
+     changes NOTHING about what exists on the page, only how
+     it looks.
+     ============================================================ */
+
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Space+Mono:wght@400;700&family=Work+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --pine: #2F4B3C;
+    --pine-dark: #1E3B3E;
+    --canvas: #EDE6D6;
+    --canvas-light: #F6F2E8;
+    --brass: #B8925A;
+    --brass-light: #D4B483;
+    --ink: #2B2620;
+    --rust: #A85C3B;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Work Sans', sans-serif;
+    background: var(--canvas);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- HERO / VIDEO SECTION ---------- */
+
+  .hero {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at top, #274842 0%, var(--pine-dark) 65%, #142826 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6vh 5vw;
+    text-align: center;
+    color: var(--canvas-light);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .eyebrow {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--brass-light);
+    margin-bottom: 1.25rem;
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 1.05;
+    max-width: 16ch;
+    margin-bottom: 0.75rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero .subline {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    color: var(--canvas);
+    opacity: 0.75;
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .rotate-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+    color: var(--brass-light);
+    opacity: 0.85;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .rotate-hint svg { flex-shrink: 0; }
+
+  /* The video is framed like a little movie-theater stage:
+     a tan velvet curtain (side panels + a scalloped valance)
+     with the film itself set inside. */
+  .theater-frame {
+    width: min(640px, 88vw);
+    position: relative;
+    z-index: 2;
+    padding: 38px 46px 22px;
+    border-radius: 8px 8px 4px 4px;
+    background-image:
+      repeating-linear-gradient(90deg, #CBB088 0px, #B99A70 9px, #D2B98F 18px, #BDA278 27px),
+      repeating-linear-gradient(90deg, #CBB088 0px, #B99A70 9px, #D2B98F 18px, #BDA278 27px);
+    background-position: left top, right top;
+    background-size: 46px 100%, 46px 100%;
+    background-repeat: no-repeat, no-repeat;
+    background-color: #C4A87E;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.45);
+  }
+
+  .theater-frame::before {
+    /* the scalloped valance draped across the top of the curtain */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 34px;
+    background-image:
+      radial-gradient(circle at 13px 0, transparent 13px, #C4A87E 14px),
+      linear-gradient(#D2B98F, #B99A70);
+    background-position: 0 0, 0 0;
+    background-size: 26px 100%, 100% 100%;
+    background-repeat: repeat-x, no-repeat;
+  }
+
+  .film-frame {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border: 3px solid var(--pine-dark);
+    border-radius: 3px;
+    position: relative;
+    background: #0d1a18;
+    overflow: hidden;
+  }
+
+  .film-frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Placeholder state shown until a real video is added */
+  .video-placeholder {
+    position: absolute;
+    inset: 0;
+    color: var(--canvas);
+    background: linear-gradient(160deg, #24413a, #142826);
+    text-align: center;
+  }
+
+  .video-placeholder span {
+    position: absolute;
+    top: calc(50% - 64px);
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1rem;
+    letter-spacing: 0.03em;
+  }
+
+  .play-button {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: var(--brass);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    transition: transform 0.2s ease;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+  }
+
+  .play-button:hover { transform: translate(-50%, -50%) scale(1.06); }
+  .play-button.hidden { display: none; }
+
+  .play-button svg { margin-left: 4px; }
+
+  .scroll-cue {
+    margin-top: 3.5rem;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--brass-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    opacity: 0.85;
+  }
+
+  .scroll-cue .line {
+    width: 1px;
+    height: 32px;
+    background: var(--brass-light);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  /* ---------- ADDRESS SECTION ---------- */
+
+  .address-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8vh 5vw;
+    background: var(--pine);
+  }
+
+  /* Signature element: the form styled as a luggage / postal tag —
+     ties the "save the date" moment to the physical invite that
+     will follow it in the mail. */
+  .tag-card {
+    width: min(460px, 92vw);
+    background: var(--canvas-light);
+    border-radius: 4px;
+    position: relative;
+    padding: 2.75rem 2.25rem 2.25rem;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+  }
+
+  .tag-card::before {
+    content: '';
+    position: absolute;
+    inset: 14px;
+    border: 1.5px dashed rgba(43,38,32,0.25);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .tag-hole {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 32px;
+    background: var(--pine-dark);
+    border-radius: 50%;
+    border: 5px solid var(--brass);
+  }
+
+  .tag-hole::after {
+    content: '';
+    position: absolute;
+    inset: 9px;
+    background: var(--pine);
+    border-radius: 50%;
+  }
+
+  .tag-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--rust);
+    text-align: center;
+    margin-bottom: 0.4rem;
+  }
+
+  .tag-card h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.7rem;
+    text-align: center;
+    margin-bottom: 0.4rem;
+  }
+
+  .tag-card .tag-sub {
+    text-align: center;
+    font-size: 0.85rem;
+    color: rgba(43,38,32,0.65);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+
+  .field-row {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .field {
+    margin-bottom: 1.1rem;
+    flex: 1;
+  }
+
+  .field label {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(43,38,32,0.55);
+    margin-bottom: 0.4rem;
+  }
+
+  .field input {
+    width: 100%;
+    border: none;
+    border-bottom: 1.5px solid rgba(43,38,32,0.25);
+    background: transparent;
+    padding: 0.5rem 0.1rem;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .field input:focus {
+    border-bottom-color: var(--rust);
+  }
+
+  .submit-btn {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0.9rem;
+    background: var(--pine);
+    color: var(--canvas-light);
+    border: none;
+    border-radius: 3px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .submit-btn:hover { background: var(--pine-dark); }
+
+  .form-note {
+    margin-top: 1rem;
+    font-size: 0.7rem;
+    text-align: center;
+    color: rgba(43,38,32,0.5);
+    line-height: 1.5;
+  }
+
+  /* Thank-you state, hidden until submission */
+  .thank-you {
+    display: none;
+    text-align: center;
+  }
+
+  .thank-you.visible { display: block; }
+
+  .thank-you h2 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .thank-you p {
+    font-size: 0.9rem;
+    color: rgba(43,38,32,0.7);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 480px) {
+    .field-row { flex-direction: column; gap: 0; }
+    .tag-card { padding: 2.5rem 1.5rem 2rem; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ================= HERO / VIDEO ================= -->
+  <section class="hero">
+
+    <div class="eyebrow" style="position:relative; z-index:2;">Mark Your Calendar</div>
+    <h1>We're tying the knot</h1>
+    <div class="subline">PORTOLA, CALIFORNIA &nbsp;·&nbsp; JUNE 2027</div>
+
+    <div class="rotate-hint" id="rotateHint">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <rect x="5" y="2" width="14" height="20" rx="2"/>
+        <path d="M12 18h.01"/>
+      </svg>
+      Turn your phone sideways for the full picture
+    </div>
+
+    <div class="theater-frame">
+      <div class="film-frame" id="filmFrame">
+        <!--
+          HOW TO ADD YOUR REAL VIDEO:
+          1. Upload your exported .mp4 file into the same folder as this
+             HTML file (same repo, top level, right alongside index.html).
+          2. Change the src below from "save-the-date.mp4" to your file's
+             exact name if it's different.
+          3. Delete the <div class="video-placeholder"> block — the real
+             <video> tag underneath it will show through automatically.
+        -->
+        <div class="video-placeholder" id="placeholder">
+          <span>Click Here to Play Video</span>
+        </div>
+        <video id="stdVideo" playsinline webkit-playsinline controls>
+          <source src="save-the-date.mp4" type="video/mp4">
+        </video>
+        <button class="play-button" id="playBtn" aria-label="Play video">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#1E3B3E">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="scroll-cue">
+      <span class="line"></span>
+      <span>Then, send us your address</span>
+    </div>
+  </section>
+
+  <!-- ================= ADDRESS FORM ================= -->
+  <section class="address-section">
+    <div class="tag-card">
+      <div class="tag-hole"></div>
+
+      <form id="addressForm">
+        <div class="tag-label">To Be Delivered To</div>
+        <h2>Save Us Your Address</h2>
+        <p class="tag-sub">We'll mail your formal invitation here closer to the date.</p>
+
+        <div class="field">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" name="fullName" required />
+        </div>
+
+        <div class="field">
+          <label for="street">Street Address</label>
+          <input type="text" id="street" name="street" required />
+        </div>
+
+        <div class="field">
+          <label for="street2">Apt / Unit (optional)</label>
+          <input type="text" id="street2" name="street2" />
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" required />
+          </div>
+          <div class="field" style="max-width:90px;">
+            <label for="state">State</label>
+            <input type="text" id="state" name="state" required />
+          </div>
+          <div class="field" style="max-width:110px;">
+            <label for="zip">ZIP</label>
+            <input type="text" id="zip" name="zip" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="email">Email (optional)</label>
+          <input type="email" id="email" name="email" />
+        </div>
+
+        <button type="submit" class="submit-btn">Send It In</button>
+        <p class="form-note">Your info goes straight to our address list — thank you!</p>
+      </form>
+
+      <div class="thank-you" id="thankYou">
+        <h2>Got it!</h2>
+        <p>Thank you — we've saved your address and can't wait to celebrate with you.</p>
+      </div>
+    </div>
+  </section>
+
+<script>
+  /* ============================================================
+     THIS IS THE "JAVASCRIPT" LAYER — what happens when someone
+     interacts with the page. Two behaviors live here:
+     1. Clicking play swaps the placeholder for the real video.
+     2. Submitting the form shows a thank-you message.
+     ============================================================ */
+
+  // ---- Behavior 1: play the video. On phones, also go fullscreen so
+  //      rotating the device lets it fill the screen in landscape.
+  //      On desktop we skip forcing fullscreen entirely — the native
+  //      control bar already has its own fullscreen button with
+  //      normal, reliable exit behavior (Esc key, or its own button). ----
+  const playBtn = document.getElementById('playBtn');
+  const placeholder = document.getElementById('placeholder');
+  const video = document.getElementById('stdVideo');
+
+  const isPhone = /iPhone|iPod|Android/i.test(navigator.userAgent);
+
+  playBtn.addEventListener('click', () => {
+    // Hide the placeholder so the real <video> element shows through.
+    placeholder.style.display = 'none';
+    playBtn.classList.add('hidden');
+
+    if (isPhone) {
+      // iOS Safari uses its own webkitEnterFullscreen() instead of the
+      // standard requestFullscreen(), so we try both.
+      if (video.webkitEnterFullscreen) {
+        video.webkitEnterFullscreen();
+      } else if (video.requestFullscreen) {
+        video.requestFullscreen().catch(() => {});
+      }
+    }
+
+    video.play().catch((err) => {
+      // Autoplay can be blocked by the browser in some cases; this
+      // just logs it rather than breaking the page.
+      console.error('Video playback failed:', err);
+    });
+  });
+
+  // ---- Behavior 2: handle the address form ----
+  const form = document.getElementById('addressForm');
+  const thankYou = document.getElementById('thankYou');
+
+  form.addEventListener('submit', function (event) {
+    // Stops the browser from doing its default action, which is
+    // reloading the page. We want to handle the submission ourselves.
+    event.preventDefault();
+
+    // Gather everything the guest typed into one object.
+    const data = {
+      fullName: document.getElementById('fullName').value,
+      street: document.getElementById('street').value,
+      street2: document.getElementById('street2').value,
+      city: document.getElementById('city').value,
+      state: document.getElementById('state').value,
+      zip: document.getElementById('zip').value,
+      email: document.getElementById('email').value,
+    };
+
+    // Where the data actually gets saved: a Google Apps Script "web app"
+    // attached to a Google Sheet. Every submission becomes a new row.
+    const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzDx1TmB2bCNEPwdT4JQ56pb0N2Z69_YHCEabXhsxALYGoxWhw0EvP82A7QX27HtLmk3g/exec';
+
+    const submitBtn = form.querySelector('.submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    // Note on 'no-cors': Apps Script web apps don't send back the
+    // browser permission headers fetch() normally checks for, so we
+    // tell the browser not to check. The tradeoff is we can't read
+    // the response back (success/failure), so we treat "the request
+    // went out without throwing an error" as good enough here — you
+    // can always double check by opening the Sheet itself.
+    fetch(SHEET_ENDPOINT, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+      .then(() => {
+        form.style.display = 'none';
+        thankYou.classList.add('visible');
+      })
+      .catch((err) => {
+        console.error('Submission failed:', err);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send It In';
+        alert('Something went wrong sending that — please try again.');
+      });
+  });
+</script>
+
+
+</body>
+</html>
